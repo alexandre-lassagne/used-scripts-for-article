@@ -14,7 +14,6 @@ write.table(LM.emm, file = "/media/alexandre/Disque/Genomes/GWAS/GWAS_male/pheno
 
 ### MLMM GWAS ###
 
-setwd("/media/alexandre/Disque/Genomes/GWAS/GWAS_male/")
 myG <- read.table("GWAS_male.hapmap", head = F)
 myYa  <- read.csv("pheno.corrected.csv", sep = ";", dec = ".", head = TRUE)
 myYa$Mat <- as.factor(myYa$Mat)
@@ -53,22 +52,6 @@ mydata = as.data.table(mydata)
 setkey(mydata, chr)
 
 hist(mydata$pval)
-
-g <- manhattan_plot(x = mydata , pval.colname = "pval", chr.colname = "chr", pos.colname = "pos", plot.title = "", y.label = "-log10(p_value)") 
-g + 
-  theme(
-    plot.title = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y.right =element_blank() )
-
-plotgwas = g + 
-  theme(
-    plot.title = element_blank(),
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y.right =element_blank() )
-
 
 
 Nchr=length(mydata[,unique(chr)])
