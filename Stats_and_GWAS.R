@@ -96,3 +96,15 @@ chrInfo
 mydata=mydata[chrInfo]
 mydata$test = 10^-mydata$lindley
 ##
+
+LOCAL_10 = LOCAL_Sca10[,c(1,2,10)]
+
+write.table(LOCAL_10, file = "/media/alexandre/Disque/Genomes/GWAS/GWAS_male2/MLMM_gapit/LOCAL_10.txt", quote = F, row.names = F, col.names = F)
+
+
+
+
+
+
+
+
