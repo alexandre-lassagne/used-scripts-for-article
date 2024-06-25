@@ -1,3 +1,6 @@
+library(FactoMineR)
+library(factoextra)
+
 ### Model on phenotypic data ###
 
 tab_effet <- read.csv("/media/alex/Disque/article2/version_finales/data/tab_ml.csv",  sep = ";", dec = ".", head = TRUE)
@@ -9,7 +12,7 @@ shapiro.test(LM$residuals)
 anova(LMM) 
 LM.emm <- as.data.frame(lsmeans(LMM, ~ ID))
 
-write.table(LM.emm, file = "/media/alexandre/Disque/Genomes/GWAS/GWAS_male/pheno.corrected.csv", sep = ";", dec = ".",row.names = F )
+write.table(LM.emm, file = "pheno.corrected.csv", sep = ";", dec = ".",row.names = F )
 
 
 ### MLMM GWAS ###
@@ -19,9 +22,6 @@ myYa  <- read.csv("pheno.corrected.csv", sep = ";", dec = ".", head = TRUE)
 myYa$Mat <- as.factor(myYa$Mat)
 K <- read.table("kinship.txt", skip = 3, header = F)
 myG$V3 = as.numeric(myG$V3)
-setwd("/media/alexandre/Disque/Genomes/GWAS/GWAS_male2/")
-
-
 
 myGAPITlsmean <- GAPIT(
   Y=myYa[,c(1,2)],
@@ -33,11 +33,9 @@ myGAPITlsmean <- GAPIT(
 
 ### Local Score on MMLMM gapit ###
 
-setwd("/media/alexandre/Disque/Genomes/GWAS/GWAS_male2/MLMM_gapit/")
 
 GWAS = read.csv('GAPIT.Association.GWAS_Results.MLMM.lsmean.csv', sep = ",", dec = ".")
 GWAS= GWAS[-c(14801,14802),]
-
 
 
 mydata = GWAS[,c(2,3,4)]
@@ -97,14 +95,46 @@ mydata=mydata[chrInfo]
 mydata$test = 10^-mydata$lindley
 ##
 
-LOCAL_10 = LOCAL_Sca10[,c(1,2,10)]
 
-write.table(LOCAL_10, file = "/media/alexandre/Disque/Genomes/GWAS/GWAS_male2/MLMM_gapit/LOCAL_10.txt", quote = F, row.names = F, col.names = F)
+### Multiple Correspondence Analysis on significant SNP from Local Score Result ###
+
+yolo = read.table(file = "TableSNP.txt" , header = T, row.names = 1)
+
+res.mca <- MCA(yolo, 
+               ncp = 4, # nbr de composante 
+               graph=FALSE)
+
+fviz_screeplot (res.mca, addlabels = TRUE, ylim = c (0, 70))
 
 
+res.hcpc <- HCPC(res.mca, graph = FALSE, max = 3)
 
+fviz_dend(res.hcpc, show_labels = FALSE)
 
+# Individus
+map_clust =fviz_cluster(res.hcpc, geom = "point", main = "Factor map")
 
+eig.val <- res.mca$eig
+barplot(eig.val[, 2], 
+        names.arg = 1:nrow(eig.val), 
+        main = "Variances Explained by Dimensions (%)",
+        xlab = "Principal Dimensions",
+        ylab = "Percentage of variances",
+        col ="steelblue")
 
+write.table(res.hcpc$data.clust, file = "Cluster_marker_regscaff10.txt", quote = F, row.names = T, col.names = T)
 
+### Clustering of strains based on Multi-locus genotypes ###
 
+clustbis = read.table(file = "/Cluster_marker_regscaff10.txt" , header = T, row.names = 1)
+pheno_corre = read.csv('pheno.corrected.csv', sep = ";", dec = ".")
+pheno_corre$clust = clustbis$clust
+pheno_corre$clust = as.factor(pheno_corre$clust)
+lmclust = lm(lsmean ~ clust, data = pheno_corre)
+hist(lmclust$residuals)
+x11();par(mfrow=c(2,2));plot(lmclust)
+shapiro.test(lmclust$residuals)
+anova(lmclust) 
+
+model= aov(lsmean ~ clust, data = pheno_corre)
+TukeyHSD(model, conf.level=.95)
