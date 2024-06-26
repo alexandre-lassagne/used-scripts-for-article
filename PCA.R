@@ -2,7 +2,7 @@ library(vcfR)
 library(adegenet)
 
 pop.data <- read.csv("popdata.csv", sep = ";", header = TRUE)
-vcf_oryzaeY <- read.vcfR("\GWAS_male_13sca.vcf")
+vcf_oryzaeY <- read.vcfR("SNPCalling.vcf")
 
 genlight_oryzaeY <- vcfR2genlight(vcf_oryzaeY)
 
