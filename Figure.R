@@ -81,13 +81,27 @@ map_clust=fviz_cluster(res.hcpc, geom = "point", main = "", show.clust.cent = F)
 clu = plot_grid(map_clust,clustered_plot, ncol = 2, align = "v", rel_widths = c(4, 3),labels = "AUTO")
 
 
+### Supp. Figure 5 ###
 
+BOXstrain<- ggplot(data=tab_effect, aes(x=Strain, y=log1p(MicroconidiamL), fill = rep)) + geom_boxplot() + facet_grid(.~Batch,  scales='free')+
+  ylab("log (1 + number of microconidia per ml") + xlab("Strains")+ theme(plot.title = element_text(hjust = 1)) + 
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=0.001)+ geom_jitter(shape=16, position=position_jitter(0.2))+ 
+  theme(plot.title = element_blank(),
+        
+        axis.text.x = element_text(color = "black", size = 7, face = "bold",angle = 90, hjust = ),
+        axis.title.x =element_text(color = "black", size = 13, face = "bold",angle = 0, hjust = ),
+        axis.text.y = element_text(color = "black", size = 15, face = "bold",angle = 0, hjust = ),
+        axis.title.y = element_text(color = "black", size = 15, face = "bold",angle = 90, hjust = )
+  ) 
+
+
+### Export ###
 
 
 ggsave(BARstrain, file="figure1.svg", width=12, height=9, dpi = 600)
 ggsave(figfin, file="figure2.svg", width=12, height=9, dpi = 600)
 ggsave(clu, file="figure4.svg", width=12, height=9, dpi = 600)
-
+ggsave(BOXstrain, file="suppfigure5.svg", width=12, height=9, dpi = 600)
 
 
 
