@@ -11,4 +11,4 @@ less SNPCalling.vcf | sed "s|\t0:|\t0\/0:|g" | sed 's|\t1:|\t1\/1:|g' | sed 's|\
 
 ### production of the Supp. Figure 3
 
-./bin/PopLDdecay -InVCF /media/alexandre/Disque/Genomes/GWAS/GWAS_male/GWAS_male_13scadiplo.vcf.gz -MAF 0cd .05 -OutStat Stat_PopLDdecay
+./bin/PopLDdecay -InVCF SNPCalling.vcf_diplo.vcf -MAF 0cd .05 -OutStat Stat_PopLDdecay
