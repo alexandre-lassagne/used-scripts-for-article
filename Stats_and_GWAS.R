@@ -3,7 +3,7 @@ library(factoextra)
 
 ### Model on phenotypic data ###
 
-tab_effet <- read.csv("tab_ml.csv",  sep = ";", dec = ".", head = TRUE)
+tab_effect <- read.csv("tab_ml.csv",  sep = ";", dec = ".", head = TRUE)
 
 LMM = lm(log1p(MicroconidiamL) ~ Box + Batch + ID , data = tab_effect)
 hist(LMM$residuals)
